@@ -30,4 +30,4 @@ Podgląd: http://127.0.0.1:4173/imiona-nadawane/ . Aktualizacja pobiera katalog 
 
 ## Publikacja
 
-W Settings → Pages wybierz GitHub Actions. Push do `main` uruchamia testy i wdrożenie plików statycznych przez `.github/workflows/pages.yml`.
+W Settings → Pages wybierz „Deploy from a branch”, gałąź `main`, katalog `/ (root)`. GitHub Pages publikuje pliki statyczne po każdym pushu, a `.nojekyll` wyłącza przetwarzanie Jekyll. Osobny workflow `.github/workflows/check.yml` uruchamia testy danych i sprawdzenie składni JavaScript.
