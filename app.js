@@ -47,7 +47,7 @@ function renderChart(){
   let svg=`<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Wykres popularności imienia ${esc(displayName(selected.name))}"><title>${esc(displayName(selected.name))} — ${$('#metric').selectedOptions[0].textContent}</title>`;
   for(let i=0;i<=4;i++){const v=min+(max-min)*i/4,yy=y(v);svg+=`<line x1="${left}" x2="${w-right}" y1="${yy}" y2="${yy}" stroke="#dce1d5"/><text x="${left-10}" y="${yy+4}" text-anchor="end">${value(v)}</text>`;}
   const step=points.length>15?5:w<480?2:1;
-  points.forEach((p,i)=>{if(i%step===0||i===points.length-1)svg+=`<text x="${x(i)}" y="${h-12}" text-anchor="middle">${p.period.slice(0,4)}</text>`;});
+  points.forEach((p,i)=>{if((i%step===0&&points.length-1-i>=step)||i===points.length-1)svg+=`<text x="${x(i)}" y="${h-12}" text-anchor="middle">${p.period.slice(0,4)}</text>`;});
   let path='',pen=false;
   points.forEach((p,i)=>{if(p[metric]===null){pen=false;return;}path+=`${pen?'L':'M'}${x(i)},${y(p[metric])} `;pen=true;});
   svg+=`<path d="${path}" fill="none" stroke="#294f42" stroke-width="2.5" stroke-linejoin="round"/>`;
