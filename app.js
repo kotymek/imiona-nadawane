@@ -39,14 +39,14 @@ function renderChart(){
   $('#chart-summary').textContent=best?`Najwięcej nadań: ${fmt(best.count)} · ${label(best.period)}. ${isRank?'Miejsce 1 jest na górze wykresu.':$('#chart-period').value==='half'?'Każdy punkt obejmuje styczeń–czerwiec.':'Każdy punkt obejmuje pełny rok.'}`:'Brak wpisów dla tego imienia w wybranym rodzaju okresu.';
   $('#history-body').innerHTML=points.map(p=>`<tr><td>${label(p.period)}</td><td class="number">${p.count===null?'brak wpisu':fmt(p.count)}</td><td class="number">${p.rank===null?'—':fmt(p.rank)}</td><td class="number">${p.share===null?'—':pct(p.share)}</td></tr>`).join('');
   $('#point-info').textContent=valid.length?pointDescription(valid.at(-1)):'';
-  const w=740,h=300,left=62,right=20,top=28,bottom=42,plotH=h-top-bottom;
+  const w=Math.max(300,$('#chart').clientWidth||740),h=w<480?260:300,left=62,right=20,top=28,bottom=42,plotH=h-top-bottom;
   const max=Math.max(isRank?5:5,...valid.map(p=>p[metric]))*(isRank?1:1.08);
   const min=isRank?1:0;
   const x=i=>left+i*(w-left-right)/Math.max(1,points.length-1),y=v=>isRank?top+(v-min)/(max-min)*plotH:top+plotH-(v-min)/(max-min)*plotH;
   const value=v=>metric==='share'?`${v.toLocaleString('pl-PL',{maximumFractionDigits:1})}%`:fmt(Math.round(v));
   let svg=`<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Wykres popularności imienia ${esc(displayName(selected.name))}"><title>${esc(displayName(selected.name))} — ${$('#metric').selectedOptions[0].textContent}</title>`;
   for(let i=0;i<=4;i++){const v=min+(max-min)*i/4,yy=y(v);svg+=`<line x1="${left}" x2="${w-right}" y1="${yy}" y2="${yy}" stroke="#dce1d5"/><text x="${left-10}" y="${yy+4}" text-anchor="end">${value(v)}</text>`;}
-  const step=points.length>15?5:1;
+  const step=points.length>15?5:w<480?2:1;
   points.forEach((p,i)=>{if(i%step===0||i===points.length-1)svg+=`<text x="${x(i)}" y="${h-12}" text-anchor="middle">${p.period.slice(0,4)}</text>`;});
   let path='',pen=false;
   points.forEach((p,i)=>{if(p[metric]===null){pen=false;return;}path+=`${pen?'L':'M'}${x(i)},${y(p[metric])} `;pen=true;});
@@ -60,7 +60,7 @@ function renderChart(){
 function openDetail(name,sex,fromURL=false){
   selected={name,gender:sex};
   if(!fromURL)$('#chart-period').value=period.endsWith('-H1')?'half':'full';
-  renderChart();if(!dialog.open)dialog.showModal();
+  if(!dialog.open)dialog.showModal();renderChart();
 }
 async function init(){
   const response=await fetch(new URL('data/names.json',import.meta.url));if(!response.ok)throw new Error(`HTTP ${response.status}`);data=await response.json();
@@ -81,6 +81,7 @@ async function init(){
   dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
   $('#copy-link').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);$('#copy-link').textContent='Skopiowano';}catch{$('#copy-link').textContent='Skopiuj adres z paska';}setTimeout(()=>$('#copy-link').textContent='Kopiuj link',2200);});
   document.addEventListener('keydown',e=>{if(e.key==='/'&&!dialog.open&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('#search').focus();}});
+  window.addEventListener('resize',()=>{if(selected)renderChart();});
   render();
   const requested=params.get('imie')?.toLocaleUpperCase('pl'),sex=params.get('imiePlec');
   if(allNames.some(r=>r.name===requested&&r.gender===sex)){
