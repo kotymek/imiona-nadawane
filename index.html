@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Imiona nadawane w Polsce — rankingi i trendy</title>
+  <meta name="description" content="Jak zmieniała się popularność imion dzieci w Polsce? Rankingi od 2000 roku, wyszukiwarka i wykresy na podstawie danych dane.gov.pl.">
+  <meta name="theme-color" content="#f3efe7">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#ranking">Przejdź do rankingu</a>
+<header class="site-header"><a class="brand" href="https://kotymek.github.io/">kotymek<span>.</span></a><nav aria-label="Nawigacja"><a href="https://kotymek.github.io/imiona/">Imiona w PESEL</a><a href="#sources">O danych</a></nav></header>
+<main>
+  <section class="hero">
+    <p class="eyebrow">IMIONA DZIECI W POLSCE <span>2000 — <span id="latest-year">2026</span></span></p>
+    <h1>Małe imiona.<br><em>Wielkie historie.</em></h1>
+    <p class="lead">Jedne zostają na pokolenia, inne wracają do łask.<br>Odkryj, jakie imiona wybierają rodzice — rok po roku.</p>
+    <label class="search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="sr-only">Szukaj imienia we wszystkich latach</span><input id="search" type="search" placeholder="Znajdź imię, np. Zofia lub Antoni…" autocomplete="off" aria-describedby="search-hint"><kbd aria-hidden="true">/</kbd></label>
+    <p class="hint" id="search-hint">Możesz pisać bez polskich znaków. Wybierz imię, aby zobaczyć jego historię.</p>
+    <div class="hero-stats"><div><strong id="stat-years">—</strong><span>pełnych roczników</span></div><div><strong id="stat-names">—</strong><span>różnych zapisów imion</span></div><div><strong id="stat-leader">—</strong><span id="stat-leader-label">najpopularniejsze imię</span></div></div>
+  </section>
+  <section class="ranking" id="ranking" aria-labelledby="ranking-title">
+    <div class="section-heading"><div><p class="eyebrow">WYBORY RODZICÓW</p><h2 id="ranking-title">Ranking imion <span id="heading-year"></span></h2></div><p id="result-count" aria-live="polite">Wczytywanie danych…</p></div>
+    <div class="controls"><div class="segmented" role="group" aria-label="Płeć"><button data-gender="K" aria-pressed="true">Dziewczynki</button><button data-gender="M" aria-pressed="false">Chłopcy</button><button data-gender="all" aria-pressed="false">Wszystkie</button></div><div class="selects"><label>Okres<select id="period" aria-label="Rok i okres"></select></label><label>Sortuj<select id="sort"><option value="popular">Najpopularniejsze</option><option value="rare">Najrzadsze</option><option value="alpha">Alfabetycznie</option></select></label></div></div>
+    <p id="period-note" class="period-note" hidden>Dane za styczeń–czerwiec. Wykres pokazuje porównanie z pierwszymi półroczami innych lat.</p>
+    <p class="hint">Miejsce dotyczy wybranego okresu i płci. Wyszukiwanie nie zmienia pozycji; remisy mają wspólne miejsce.</p>
+    <div class="table-wrap"><table class="ranking-table"><thead><tr><th scope="col">Miejsce</th><th scope="col">Imię</th><th scope="col" class="gender-col">Płeć</th><th scope="col" class="number">Liczba nadań</th><th scope="col" class="share-col">Udział w zestawieniu</th><th scope="col"><span class="sr-only">Historia imienia</span></th></tr></thead><tbody id="names-body"><tr><td colspan="6" class="empty">Wczytywanie rankingu…</td></tr></tbody></table></div>
+    <div class="pagination"><span id="page-info"></span><div><button id="prev" type="button">Poprzednia</button><button id="next" type="button">Następna</button></div></div>
+  </section>
+  <section id="sources" class="about"><div><p class="eyebrow">LICZBY Z HISTORIĄ</p><h2>Skąd te imiona?</h2></div><div><p>To statystyki <strong>pierwszych imion nadanych dzieciom w Polsce</strong>, publikowane w serwisie <a href="https://dane.gov.pl/pl/dataset/219,imiona-nadawane-dzieciom-w-polsce">dane.gov.pl</a>. Każdy zapis imienia jest osobną pozycją.</p><p>Pełne lata i pierwsze półrocza porównujemy oddzielnie. Udział to procent nadań w opublikowanym zestawieniu dla wybranej płci, nie odsetek wszystkich urodzeń. Brak imienia w pliku nie oznacza zera nadań; źródło może pomijać rzadkie imiona.</p><details><summary>Pliki źródłowe i aktualizacja</summary><p id="updated"></p><ul id="source-list"></ul></details></div></section>
+</main>
+<footer><a class="brand" href="https://kotymek.github.io/">kotymek<span>.</span></a><span>Każde imię ma swój czas.</span><a href="https://github.com/kotymek/imiona-nadawane">Kod na GitHub</a></footer>
+<dialog id="detail" aria-labelledby="detail-title"><div class="dialog-top"><p class="eyebrow" id="detail-gender"></p><button id="close-detail" aria-label="Zamknij wykres">×</button></div><h2 id="detail-title"></h2><p class="detail-subtitle">Popularność imienia na przestrzeni lat</p><div class="chart-controls"><label>Porównaj<select id="chart-period"><option value="full">Pełne lata</option><option value="half">Pierwsze półrocza</option></select></label><label>Na wykresie<select id="metric"><option value="count">Liczba nadań</option><option value="share">Udział w zestawieniu (%)</option><option value="rank">Miejsce w rankingu</option></select></label><button id="copy-link">Kopiuj link</button></div><p id="chart-summary" class="chart-summary"></p><div id="chart"></div><p class="hint">Najedź na punkt lub wybierz go klawiaturą, aby odczytać wartość. Przerwa w linii oznacza brak wpisu w źródle.</p><p id="point-info" aria-live="polite"></p><details><summary>Dane wykresu w tabeli</summary><div class="table-wrap"><table><thead><tr><th>Okres</th><th class="number">Liczba nadań</th><th class="number">Miejsce</th><th class="number">Udział</th></tr></thead><tbody id="history-body"></tbody></table></div></details><p class="hint">Udział i miejsce obliczamy w zestawieniu dla płci tego imienia.</p></dialog>
+<noscript><p class="empty">Włącz JavaScript, aby korzystać z wyszukiwarki i wykresów.</p></noscript>
+</body></html>
